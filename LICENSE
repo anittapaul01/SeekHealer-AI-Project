@@ -19,3 +19,12 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+- **Notes**:
+  - `title`: Matches your project name.
+  - `emoji`: 🩺 (medical symbol) for visual appeal.
+  - `colorFrom`, `colorTo`: Aesthetic gradient for the Space’s UI.
+  - `sdk`: `streamlit`, as specified in Step 5.1 (April 21, 2025, 20:00).
+  - `sdk_version`: `1.44.1`, matching `requirements.txt` (artifact `30637a4f-8485-4bc3-a877-785de4dca744`).
+  - `app_file`: `app.py`, the entry point (artifact `b2dd1509-2035-4b6b-bcd5-a6694b564527`).
+  - `pinned`: `false`, to keep the Space unpinned in your profile.

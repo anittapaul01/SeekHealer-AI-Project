@@ -1,6 +1,20 @@
+---
+title: Seek Healer
+emoji: 🩺
+colorFrom: blue
+colorTo: green
+sdk: streamlit
+sdk_version: 1.44.1
+app_file: app.py
+pinned: false
+---
+
 # Seek Healer
 
 Seek Healer is an AI-powered disease prediction app that analyzes user-input symptoms to predict the top 3 potential medical conditions, with descriptions sourced from PubMed. Built with Streamlit (frontend), FastAPI (backend), and a TabNet model with BioBERT embeddings.
+
+## Hosted on Hugging Face Spaces
+[Open in Hugging Face Spaces](https://huggingface.co/spaces/anitta-paul/SeekHealer)
 
 ## Features
 - Input symptoms via a user-friendly Streamlit interface.
@@ -18,7 +32,7 @@ Seek Healer is an AI-powered disease prediction app that analyzes user-input sym
 - `preprocess.py`: Dataset preprocessing (reference only).
 - `data/`: Contains datasets (`training.csv`, `testing.csv`, etc.).
 
-## Installation
+## Setup
 1. Clone the repository:
    ```bash
    git clone https://github.com/anittapaul01/SeekHealer-AI-Project.git
