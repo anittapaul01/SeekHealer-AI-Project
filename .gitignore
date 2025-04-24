@@ -12,10 +12,6 @@ venv/
 data/trainings.csv
 data/testing.csv
 data/Final_augmented_dataset_Diseases_and_Symptoms.csv
-data/symptom_embeddings.npy
-data/tabnet_model.zip
-data/pubmed_medical_info.csv
-data/aug_df.csv
 
 # Misc
 *.log
