@@ -3,6 +3,7 @@
 import streamlit as st
 import requests
 import logging
+from html import escape
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -133,12 +134,13 @@ if st.button("Predict"):
     if symptoms:
         try:
             logger.info(f"Sending request to FastAPI: {symptoms}")
-            response = requests.post("http://localhost:8000/predict", json={'symptoms': symptoms}, timeout=10)
+            response = requests.post("http://0.0.0.0:8000/predict", json={'symptoms': symptoms}, timeout=10)
             response.raise_for_status()
             logger.info(f"FastAPI response: {response.json()}")
-            results = response.json()['response']  
-            
-            st.markdown("### Top Predicted Conditions")
+            results = response.json().get('response', '')
+            # Sanitize HTML to prevent XSS
+            results = escape(results) if results else '<p>No results returned.</p>'
+            st.markdown('<div class="results-header">Top Predicted Conditions</div>', unsafe_allow_html=True)
             st.markdown(results, unsafe_allow_html=True)
     
         except requests.exceptions.RequestException as e:
