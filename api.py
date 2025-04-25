@@ -5,9 +5,14 @@ from pydantic import BaseModel
 from pubmed_fetch import fetch_medical_info
 from symptom_matching import match_symptoms
 from tabnet_model import retrieve_top_diseases
+import logging
 
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = FastAPI()
+logger.info("FastAPI initialized")
 
 
 class UserInput(BaseModel):
@@ -55,7 +60,7 @@ def generate_response(user_input, top_diseases):
     
 
 @app.post('/predict')
-def predict_disease(user_input: UserInput):
+async def predict_disease(user_input: UserInput):
     '''Predict diseases from user symptoms.
 
     Args:
@@ -67,12 +72,14 @@ def predict_disease(user_input: UserInput):
     Raises:
         HTTPException: If prediction fails.
     '''
+    logger.info(f"Received predict request: {user_input}")
     try:
         ip_vec = match_symptoms(user_input.symptoms)
         top_diseases = retrieve_top_diseases(ip_vec)
         response = generate_response(user_input.symptoms, top_diseases)
         return {'response': response}
     except Exception as e:
+        logger.error(f"Error in predict: {e}")
         raise HTTPException(status_code=500, detail=f'Prediciton failed: {str(e)}')
     
 

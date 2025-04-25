@@ -2,6 +2,10 @@
 
 import streamlit as st
 import requests
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 st.set_page_config(page_title="Seek Healer", page_icon="🩺", layout="wide")
 
@@ -128,14 +132,17 @@ symptoms = st.text_input("Symptoms (comma-seperated, e.g., fever, cough, fatigue
 if st.button("Predict"):
     if symptoms:
         try:
-            response = requests.post("http://localhost:8000/predict", json={'symptoms': symptoms})
+            logger.info(f"Sending request to FastAPI: {symptoms}")
+            response = requests.post("http://localhost:8000/predict", json={'symptoms': symptoms}, timeout=10)
             response.raise_for_status()
+            logger.info(f"FastAPI response: {response.json()}")
             results = response.json()['response']  
             
             st.markdown("### Top Predicted Conditions")
             st.markdown(results, unsafe_allow_html=True)
     
         except requests.exceptions.RequestException as e:
+            logger.error(f"Error in prediction: {e}")
             st.error(f"Error connecting to the server: {str(e)}")
     else:
         st.warning("Please enter symptoms.")

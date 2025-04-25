@@ -3,17 +3,23 @@
 import pandas as pd
 import numpy as np
 from pytorch_tabnet.tab_model import TabNetClassifier
+import os
+import logging
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 try:
-    aug_df = pd.read_csv('data/aug_df.csv')
+    aug_df = pd.read_csv(os.path.join('data', 'aug_df.csv'))
+    logger.info("Loaded aug_df.csv")
     disease_classes = pd.factorize(aug_df['Prognosis'])[1]
     symptoms_col = aug_df.columns[1:]
     model_tab = TabNetClassifier()
-    model_tab.load_model('data/tabnet_model.zip')
-except FileNotFoundError as e:
-    raise FileNotFoundError(f'Failed to load dataset or mode: {e}')
-
+    model_tab.load_model(os.path.join('data', 'tabnet_model.zip'))
+    logger.info("Loaded tabnet_model.zip")
+except Exception as e:
+    logger.error(f"Error loading TabNet data/model: {e}")
+    
 
 # Retrieve top k diseases using TabNet
 

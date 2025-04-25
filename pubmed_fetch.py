@@ -1,7 +1,6 @@
 '''PubMed data fetching utilities.'''
 
 import pandas as pd
-import os
 import asyncio
 import aiohttp
 import nest_asyncio
@@ -10,14 +9,20 @@ from aiohttp import ClientSession, TCPConnector
 from bs4 import BeautifulSoup
 import re
 import unicodedata 
+import os
+import logging
 
 nest_asyncio.apply()
 
-try:
-    medical_db = pd.read_csv('data/pubmed_medical_info.csv')
-except FileNotFoundError as e:
-    raise FileNotFoundError(f'Failed to load pubmed_medical_info.csv: {e}')
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
+try:
+    medical_db = pd.read_csv(os.path.join('data', 'pubmed_medical_info.csv'))
+    logger.info("Loaded pubmed_medical_info.csv")
+except Exception as e:
+    logger.error(f"Error loading pubmed_medical_info.csv: {e}")
+    
 def fetch_medical_info(disease, symptoms):
     '''Fetch medical info from preloaded PubMed data (pubmed_medical_info.csv).
 

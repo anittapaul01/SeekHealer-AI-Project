@@ -5,16 +5,28 @@ import numpy as np
 import spacy
 from sklearn.metrics.pairwise import cosine_similarity
 from biobert_utils import get_embedding, symptom_embeddings
+import os
+import logging
 
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Normalize input using spaCy
-nlp = spacy.load("en_core_web_sm")
+try:
+    nlp = spacy.load("en_core_web_sm")
+    logger.info("Loaded SpaCy model en_core_web_sm")
+except OSError as e:
+    logger.error(f"Failed to load SpaCy model en_core_web_sm: {e}")
+    raise OSError(f"Ensure en_core_web_sm is installed via setup_spacy.py: {e}")
 
 try:
-    aug_df = pd.read_csv('data/aug_df.csv')
+    aug_df = pd.read_csv(os.path.join('data', 'aug_df.csv'))
     symptoms_col = aug_df.columns[1:]
+    logger.info("Loaded aug_df.csv")
 except FileNotFoundError as e:
-    raise FileNotFoundError(f'Failed to load aug_df.csv: {e}')
+    logger.error(f"Failed to load aug_df.csv: {e}")
+    raise FileNotFoundError(f"Ensure aug_df.csv exists in data/: {e}")
 
 
 def normalize_user_input(user_input):

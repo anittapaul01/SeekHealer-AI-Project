@@ -3,16 +3,20 @@
 import numpy as np
 from transformers import AutoTokenizer, AutoModel
 import torch
+import os
+import logging
 
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 try:
     tokenizer = AutoTokenizer.from_pretrained('dmis-lab/biobert-base-cased-v1.1')
     model_emb = AutoModel.from_pretrained('dmis-lab/biobert-base-cased-v1.1')
-    symptom_embeddings = np.load('data/symptom_embeddings.npy')
-
+    symptom_embeddings = np.load(os.path.join('data', 'symptom_embeddings.npy'))
+    logger.info("Loaded symptom_embeddings.npy")
 except Exception as e:
-    raise RuntimeError(f'Failed to load BioBert or embeddings: {e}')
-
+    logger.error(f"Error loading symptom_embeddings.npy: {e}")
+    
 
 def get_embedding(text, max_length=128):
     """Getting BioBert embedding for text (user input).
