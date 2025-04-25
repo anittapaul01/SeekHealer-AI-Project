@@ -1,37 +1,65 @@
 '''Main application to run FastAPI and Streamlit.'''
 
-import streamlit as st
-import os
 import subprocess
+import os
+import signal
 import sys
-import spacy
-import time
+import logging
+import psutil
 
-# Install en_core_web_sm if not present
-try:
-    spacy.load("en_core_web_sm")
-    print("en_core_web_sm is already installed.")
-except OSError:
-    print("Installing en_core_web_sm...")
-    subprocess.check_call([sys.executable, "-m", "spacy", "download", "en_core_web_sm"])
-    print("en_core_web_sm installed successfully.")
+# Set up logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
-# Start FastAPI backend
-fastapi_process = subprocess.Popen(
-    ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000"],
-    stdout=subprocess.PIPE,
-    stderr=subprocess.PIPE,
-    text=True
-)
+def kill_port(port):
+    """Kill processes using the specified port."""
+    try:
+        for proc in psutil.process_iter(['pid', 'name']):
+            try:
+                for conn in proc.net_connections():
+                    if conn.laddr.port == port:
+                        logger.info(f"Terminating process {proc.pid} on port {port}")
+                        proc.terminate()
+                        proc.wait(timeout=3)
+            except Exception:
+                pass
+    except Exception as e:
+        logger.warning(f"Error killing port {port}: {e}")
 
-# Wait briefly to check if FastAPI starts successfully
-time.sleep(5)
-if fastapi_process.poll() is not None:
-    stdout, stderr = fastapi_process.communicate()
-    print(f"FastAPI failed to start. Error: {stderr}")
-    sys.exit(1)
-else:
-    print("FastAPI backend started successfully.")
+def run_streamlit():
+    """Run Streamlit app."""
+    logger.info("Starting Streamlit on port 8501")
+    subprocess.run(["streamlit", "run", "frontend.py", "--server.port=8501", "--server.address=0.0.0.0"])
 
-# Run Streamlit frontend
-os.system("streamlit run frontend.py --server.port 8501")
+def run_fastapi():
+    """Run FastAPI backend."""
+    logger.info("Starting FastAPI on port 8000")
+    subprocess.run(["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000"])
+
+def signal_handler(sig, frame):
+    """Handle termination signals."""
+    logger.info("Terminating Streamlit and FastAPI...")
+    os._exit(0)
+
+if __name__ == "__main__":
+    # Kill any existing processes on ports 8501 and 8000
+    kill_port(8501)
+    kill_port(8000)
+
+    # Set up signal handling
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
+
+    # Start Streamlit and FastAPI in separate processes
+    from multiprocessing import Process
+    streamlit_process = Process(target=run_streamlit)
+    fastapi_process = Process(target=run_fastapi)
+
+    try:
+        streamlit_process.start()
+        fastapi_process.start()
+        streamlit_process.join()
+        fastapi_process.join()
+    except Exception as e:
+        logger.error(f"Error running processes: {e}")
+        os._exit(1)
