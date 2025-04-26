@@ -2,7 +2,7 @@
 
 import subprocess
 import logging
-import os
+import time
 import psutil
 
 logging.basicConfig(level=logging.INFO)
@@ -41,8 +41,11 @@ if __name__ == "__main__":
         )
         logger.info(f"FastAPI started with PID {fastapi_proc.pid}")
         
-        # Keep script running to maintain FastAPI process
-        fastapi_proc.wait()
+        # Wait briefly to ensure FastAPI starts
+        time.sleep(5)
+
+        # Allow CMD to proceed to Streamlit
+        logger.info("Proceeding to Streamlit")
         
     except Exception as e:
         logger.error(f"Error in main: {e}")
