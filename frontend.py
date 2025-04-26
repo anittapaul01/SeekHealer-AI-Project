@@ -8,6 +8,8 @@ from html import escape
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+logger.info('Starting Streamlit app')
+
 st.set_page_config(page_title="Seek Healer", page_icon="🩺", layout="wide")
 
 st.markdown("""
@@ -117,8 +119,12 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+logger.info('Streamlit page config set')
+
 # Main app container
 st.title("Seek Healer")
+
+logger.info('Title rendered')
 
 # App description
 st.markdown("""
@@ -127,10 +133,15 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
+logger.info('Description rendered')
+
 # Input form
 symptoms = st.text_input("Symptoms (comma-seperated, e.g., fever, cough, fatigue):", placeholder="Type your symptoms here...", key="symptoms_input")
 
+logger.info('Input form rendered')
+
 if st.button("Predict"):
+    logger.info('Predict button clicked')
     if symptoms:
         try:
             logger.info(f"Sending request to FastAPI: {symptoms}")
@@ -149,9 +160,13 @@ if st.button("Predict"):
     else:
         st.warning("Please enter symptoms.")
 
+logger.info('Button logic completed')
+
 # Footer
 st.markdown("""
     <div class='footer'>
         Powered by AI | © 2025 Seek Healer
     </div>
 """, unsafe_allow_html=True)
+
+logger.info('Footer rendered')
