@@ -4,6 +4,7 @@ import streamlit as st
 import requests
 import logging
 from html import escape
+import os
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -147,7 +148,8 @@ try:
         if symptoms:
             try:
                 logger.info(f"Sending request to FastAPI: {symptoms}")
-                response = requests.post("http://localhost:8000/predict", json={'symptoms': symptoms}, timeout=10)
+                BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
+                response = requests.post(f"{BACKEND_URL}/predict", json={'symptoms': symptoms}, timeout=10)
                 response.raise_for_status()
                 logger.info(f"FastAPI response: {response.json()}")
                 results = response.json().get('response', '')
