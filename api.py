@@ -6,6 +6,7 @@ from pubmed_fetch import fetch_medical_info
 from symptom_matching import match_symptoms
 from tabnet_model import retrieve_top_diseases
 import logging
+import os
 
 
 logging.basicConfig(level=logging.INFO)
@@ -83,3 +84,7 @@ async def predict_disease(user_input: UserInput):
         raise HTTPException(status_code=500, detail=f'Prediction failed: {str(e)}')
     
 
+if __name__ == '__main__':
+    import uvicorn
+    port = int(os.getenv('PORT', 8000))
+    uvicorn.run(app, host='0.0.0.0', port=port)

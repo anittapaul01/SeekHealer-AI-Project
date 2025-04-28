@@ -2,7 +2,7 @@ FROM python:3.10
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
-    git git-lfs ffmpeg libsm6 libxext6 cmake rsync libgl1-mesa-glx \
+    git git-lfs ffmpeg libsm6 libxext6 cmake rsync libgl1-mesa-glx libgl1 libjpeg-dev zlib1g-dev \
     && rm -rf /var/lib/apt/lists/* \
     && git lfs install
 
@@ -12,10 +12,13 @@ WORKDIR /app
 # Copy requirements and install
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install --no-cache-dir streamlit==1.44.1 uvicorn==0.34.2 psutil==7.0.0
+RUN pip freeze > requirements-freeze.txt
 
 # Copy application files
-COPY frontend.py api.py app.py setup_spacy.py requirements.txt symptom_matching.py pubmed_fetch.py tabnet_model.py biobert_utils.py test_streamlit.py data/ /app
+COPY frontend.py api.py app.py setup_spacy.py requirements.txt symptom_matching.py pubmed_fetch.py tabnet_model.py biobert_utils.py data/ /app
 
-# Run backend (FastAPI) and frontend (Streamlit) together
-CMD ["bash", "-c", "uvicorn api:app --host 0.0.0.0 --port 8000 & streamlit run test_streamlit.py --server.port 8501 --server.address 0.0.0.0 --logger.level=info && wait"]
+# Expose port 7860
+EXPOSE 7860
+
+# Run app.py
+CMD ['python', 'app.py']

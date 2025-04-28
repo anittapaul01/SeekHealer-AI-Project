@@ -147,8 +147,8 @@ try:
         logger.info('Predict button clicked')
         if symptoms:
             try:
+                BACKEND_URL = os.getenv("BACKEND_URL", "http://0.0.0.0:8000")
                 logger.info(f"Sending request to FastAPI: {symptoms}")
-                BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
                 response = requests.post(f"{BACKEND_URL}/predict", json={'symptoms': symptoms}, timeout=10)
                 response.raise_for_status()
                 logger.info(f"FastAPI response: {response.json()}")
