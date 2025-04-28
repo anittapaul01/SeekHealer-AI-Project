@@ -1,4 +1,8 @@
-FROM python:3.10
+FROM python:3.10-slim
+
+# Set environment variables
+ENV BACKEND_URL=http://0.0.0.0:8000
+ENV PORT=7860
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -9,16 +13,18 @@ RUN apt-get update && apt-get install -y \
 # Set working directory
 WORKDIR /app
 
-# Copy requirements and install
+# Copy requirements
 COPY requirements.txt .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
-RUN pip freeze > requirements-freeze.txt
 
 # Copy application files
-COPY frontend.py api.py app.py setup_spacy.py requirements.txt symptom_matching.py pubmed_fetch.py tabnet_model.py biobert_utils.py data/ /app
+COPY frontend.py api.py app.py setup_spacy.py requirements.txt symptom_matching.py pubmed_fetch.py tabnet_model.py biobert_utils.py data/ /app/
 
 # Expose port 7860
 EXPOSE 7860
 
 # Run app.py
-CMD ['python', 'app.py']
+CMD ["python", "app.py"]
