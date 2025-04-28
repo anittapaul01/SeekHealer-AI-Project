@@ -2,7 +2,7 @@ FROM python:3.10
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
-    git git-lfs ffmpeg libsm6 libxext6 cmake rsync libgl1-mesa-glx libgl1 libjpeg-dev zlib1g-dev lsof \
+    git git-lfs cmake rsync libjpeg-dev zlib1g-dev lsof \
     && rm -rf /var/lib/apt/lists/* \
     && git lfs install
 
@@ -17,13 +17,13 @@ RUN pip install --no-cache-dir --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application files
-COPY frontend.py api.py setup_spacy.py requirements.txt symptom_matching.py pubmed_fetch.py tabnet_model.py biobert_utils.py data/ /app/
+COPY frontend.py api.py setup_spacy.py requirements.txt symptom_matching.py pubmed_fetch.py tabnet_model.py biobert_utils.py data/ start.sh /app/
 
 # Make start.sh executable
 RUN chmod +x /app/start.sh
 
-# Expose port 7860
-EXPOSE 7860
+# Expose ports
+EXPOSE 7860 8000
 
 # Run start.sh
 CMD ["/app/start.sh"]

@@ -43,7 +43,7 @@ cd SeekHealer-AI-Project
 2. Build and run the Docker container:
 ```bash
 docker build -t seekhealer .
-docker run -p 7860:7860 -e BACKEND_URL=http://localhost:8000 seekhealer
+docker run -p 7860:7860 -p 8000:8000 -e BACKEND_URL=http://localhost:8000 seekhealer
 ```
 3. Access the app at `http://localhost:7860`.
 
@@ -51,3 +51,9 @@ docker run -p 7860:7860 -e BACKEND_URL=http://localhost:8000 seekhealer
 - The app is deployed using a `Dockerfile` with `start.sh` to manage services.
 - Streamlit runs on port 7860 (exposed), FastAPI on port 8000 (internal).
 - Ensure `data/` files are tracked with Git LFS.
+
+## Troubleshooting
+If you encounter issues with the Docker build:
+1. Ensure `start.sh` is in the project directory:
+   ```bash
+   ls -l
