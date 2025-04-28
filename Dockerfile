@@ -17,5 +17,5 @@ RUN pip install --no-cache-dir streamlit==1.44.1 uvicorn==0.34.2 psutil==7.0.0
 # Copy application files
 COPY frontend.py api.py app.py setup_spacy.py requirements.txt symptom_matching.py pubmed_fetch.py tabnet_model.py biobert_utils.py test_streamlit.py data/ /app
 
-# Run setup and start FastAPI and Streamlit
-CMD ["bash", "-c", "python app.py && streamlit run test_streamlit.py --server.port 8501 --server.address 0.0.0.0 --logger.level=info 2>&1"]
+# Run backend (FastAPI) and frontend (Streamlit) together
+CMD ["bash", "-c", "uvicorn api:app --host 0.0.0.0 --port 8000 & streamlit run test_streamlit.py --server.port 8501 --server.address 0.0.0.0 --logger.level=info && wait"]
