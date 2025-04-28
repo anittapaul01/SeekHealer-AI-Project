@@ -3,9 +3,8 @@ title: Seek Healer
 emoji: 🩺
 colorFrom: blue
 colorTo: green
-sdk: streamlit
-sdk_version: 1.44.1
-app_file: app.py
+sdk: docker
+app_port: 7860
 pinned: false
 ---
 
@@ -25,15 +24,30 @@ Seek Healer is an AI-powered disease prediction app that analyzes user-input sym
 ## Project Structure
 - `frontend.py`: Streamlit frontend for user interaction.
 - `api.py`: FastAPI backend for prediction API.
+- `start.sh`: Shell script to manage SpaCy setup, FastAPI (port 8000), and Streamlit (port 7860).
+- `setup_spacy.py`: Installs SpaCy model (`en_core_web_sm`).
 - `biobert_utils.py`: BioBERT embeddings for symptom matching.
 - `symptom_matching.py`: Symptom processing and matching.
 - `tabnet_model.py`: TabNet model for disease prediction.
-- `pubmed_fetch.py`: Fetch PubMed medical information.
-- `preprocess.py`: Dataset preprocessing (reference only).
-- `data/`: Contains datasets (`training.csv`, `testing.csv`, etc.).
+- `pubmed_fetch.py`: Fetches PubMed medical information.
+- `Dockerfile`: Defines the Docker container setup.
+- `requirements.txt`: Python dependencies.
+- `data/`: Contains datasets (`aug_df.csv`, `pubmed_medical_info.csv`, `tabnet_model.zip`, `symptom_embeddings.npy`).
 
 ## Setup
 1. Clone the repository:
-   ```bash
-   git clone https://github.com/anittapaul01/SeekHealer-AI-Project.git
-   cd SeekHealer-AI-Project
+```bash
+git clone https://github.com/anittapaul01/SeekHealer-AI-Project.git
+cd SeekHealer-AI-Project
+```
+2. Build and run the Docker container:
+```bash
+docker build -t seekhealer .
+docker run -p 7860:7860 -e BACKEND_URL=http://localhost:8000 seekhealer
+```
+3. Access the app at `http://localhost:7860`.
+
+## Deployment on Hugging Face Spaces
+- The app is deployed using a `Dockerfile` with `start.sh` to manage services.
+- Streamlit runs on port 7860 (exposed), FastAPI on port 8000 (internal).
+- Ensure `data/` files are tracked with Git LFS.
