@@ -147,7 +147,7 @@ try:
         if symptoms:
             try:
                 logger.info(f"Sending request to FastAPI: {symptoms}")
-                response = requests.post("http://0.0.0.0:8000/predict", json={'symptoms': symptoms}, timeout=10)
+                response = requests.post("http://localhost:8000/predict", json={'symptoms': symptoms}, timeout=10)
                 response.raise_for_status()
                 logger.info(f"FastAPI response: {response.json()}")
                 results = response.json().get('response', '')
