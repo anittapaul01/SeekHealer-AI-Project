@@ -39,7 +39,7 @@ RUN chmod +x /app/start.sh && \
     chown -R appuser:appuser /app
 
 # Expose ports
-EXPOSE 7860
+EXPOSE 8000 7860
 
 # Run as appuser
 USER appuser

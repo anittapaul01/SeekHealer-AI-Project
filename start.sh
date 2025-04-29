@@ -7,7 +7,7 @@ trap 'kill $(jobs -p)' EXIT
 
 # Start FastAPI on 8000 in background
 echo "[INFO] Starting FastAPI..."
-uvicorn api:app --host 127.0.0.1 --port 8000 --log-level warning &
+uvicorn api:app --host 0.0.0.0 --port 8000 --log-level warning &
 FASTAPI_PID=$!
 
 # Wait for FastAPI to be ready (poll until it responds)

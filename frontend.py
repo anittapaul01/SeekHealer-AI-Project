@@ -2,17 +2,11 @@
 
 import streamlit as st
 import requests
-import logging
 import os
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
-try:
-    logger.info('Starting Streamlit app')
-
+def main():
     st.set_page_config(page_title="Seek Healer", page_icon="🩺", layout="wide")
-    logger.info('Streamlit page config set')
 
     st.markdown("""
         <style>
@@ -121,12 +115,8 @@ try:
         </style>
     """, unsafe_allow_html=True)
 
-    logger.info('Styles rendered')
-
     # Main app container
     st.title("Seek Healer")
-
-    logger.info('Title rendered')
 
     # App description
     st.markdown("""
@@ -135,34 +125,24 @@ try:
         </div>
     """, unsafe_allow_html=True)
 
-    logger.info('Description rendered')
-
     # Input form
     symptoms = st.text_input("Symptoms (comma-seperated, e.g., fever, cough, fatigue):", placeholder="Type your symptoms here...", key="symptoms_input")
 
-    logger.info('Input form rendered')
-
     if st.button("Predict"):
-        logger.info('Predict button clicked')
         if symptoms:
             try:
                 BACKEND_URL = os.getenv("BACKEND_URL", "http://127.0.0.1:8000")
-                logger.info(f"Sending request to FastAPI: {symptoms}")
                 response = requests.post(f"{BACKEND_URL}/predict", json={'symptoms': symptoms}, timeout=60)
                 response.raise_for_status()
-                logger.info(f"FastAPI response: {response.json()}")
                 results = response.json()['response']
             
                 st.markdown('<div class="results-header">Top Predicted Conditions</div>', unsafe_allow_html=True)
                 st.markdown(results, unsafe_allow_html=True)
         
             except requests.exceptions.RequestException as e:
-                logger.error(f"Error in prediction: {e}")
                 st.error(f"Error connecting to the server: {str(e)}")
         else:
             st.warning("Please enter symptoms.")
-
-    logger.info('Button logic completed')
 
     # Footer
     st.markdown("""
@@ -171,8 +151,14 @@ try:
         </div>
     """, unsafe_allow_html=True)
 
-    logger.info('Footer rendered')
 
-except Exception as e:
-    logger.error(f'Streamlit app failed: {e}')
-    raise
+if __name__ == "__main__":
+    import logging
+    logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger(__name__)
+    try:
+        logger.info('Launching Streamlit app')
+        main()
+    except Exception as e:
+        logger.error(f'Streamlit app failed: {e}')
+        raise
