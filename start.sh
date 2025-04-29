@@ -66,21 +66,29 @@ free_port 8000
 
 # Start FastAPI
 log "Starting FastAPI"
-uvicorn api:app --host 0.0.0.0 --port 8000 --log-level warning &
+uvicorn api:app --host 0.0.0.0 --port 8000 --log-level debug > /app/fastapi.log 2>&1 &
 FASTAPI_PID=$!
-sleep 5
+sleep 15
 if ! ps -p $FASTAPI_PID > /dev/null; then
-    error "FastAPI failed to start. Exiting."
+    error "FastAPI failed to start. Check /app/fastapi.log for details."
+    cat /app/fastapi.log
+    exit 1
+fi
+# Verify port 8000 is listening
+if ! lsof -i:8000 > /dev/null; then
+    error "Port 8000 not in use. FastAPI may have failed. Check /app/fastapi.log."
+    cat /app/fastapi.log
     exit 1
 fi
 
 # Start Streamlit
 log "Starting Streamlit"
-streamlit run frontend.py --server.port 7860 --server.address 0.0.0.0 --server.headless true --logger.level info &
+streamlit run frontend.py --server.port 7860 --server.address 0.0.0.0 --server.headless true --logger.level info > /app/streamlit.log 2>&1 &
 STREAMLIT_PID=$!
-sleep 5
+sleep 10
 if ! ps -p $STREAMLIT_PID > /dev/null; then
-    error "Streamlit failed to start. Exiting."
+    error "Streamlit failed to start. Check /app/streamlit.log for details."
+    cat /app/streamlit.log
     exit 1
 fi
 

@@ -5,17 +5,28 @@ from transformers import AutoTokenizer, AutoModel
 import torch
 import os
 import logging
+from huggingface_hub import login
 
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Authenticate with Hugging Face token
+HF_TOKEN = os.getenv("HF_TOKEN")
+if HF_TOKEN:
+    login(HF_TOKEN)
+    logger.info("Authenticated with Hugging Face token")
+else:
+    logger.warning("HF_TOKEN not set. Model loading may fail.")
+
+
 try:
-    tokenizer = AutoTokenizer.from_pretrained('dmis-lab/biobert-base-cased-v1.1')
-    model_emb = AutoModel.from_pretrained('dmis-lab/biobert-base-cased-v1.1')
     symptom_embeddings = np.load(os.path.join('data', 'symptom_embeddings.npy'))
     logger.info("Loaded symptom_embeddings.npy")
 except Exception as e:
     logger.error(f"Error loading symptom_embeddings.npy: {e}")
+    symptom_embeddings = None
+    logger.warning("symptom_embeddings not loaded. Some functionality may be limited.")
     
 
 def get_embedding(text, max_length=128):
@@ -34,6 +45,8 @@ def get_embedding(text, max_length=128):
     if not text or not isinstance(text, str):
         raise ValueError(f'Text must be a non-empty string')
     try:
+        tokenizer = AutoTokenizer.from_pretrained('dmis-lab/biobert-base-cased-v1.1')
+        model_emb = AutoModel.from_pretrained('dmis-lab/biobert-base-cased-v1.1')
         inputs = tokenizer(text, return_tensors="pt", truncation=True, padding=True, max_length=max_length)
         with torch.no_grad():
             outputs = model_emb(**inputs)
