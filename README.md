@@ -25,7 +25,6 @@ Seek Healer is an AI-powered disease prediction app that analyzes user-input sym
 - `frontend.py`: Streamlit frontend for user interaction.
 - `api.py`: FastAPI backend for prediction API.
 - `start.sh`: Shell script to manage SpaCy setup, FastAPI (port 8000), and Streamlit (port 7860).
-- `setup_spacy.py`: Installs SpaCy model (`en_core_web_sm`).
 - `biobert_utils.py`: BioBERT embeddings for symptom matching.
 - `symptom_matching.py`: Symptom processing and matching.
 - `tabnet_model.py`: TabNet model for disease prediction.

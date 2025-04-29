@@ -61,14 +61,6 @@ log "Checking ports 7860 and 8000"
 free_port 7860
 free_port 8000
 
-# Run SpaCy setup
-log "Running SpaCy setup"
-python setup_spacy.py
-if [ $? -ne 0 ]; then
-    error "SpaCy setup failed"
-    exit 1
-fi
-
 # Start FastAPI
 log "Starting FastAPI"
 uvicorn api:app --host 0.0.0.0 --port 8000 --log-level warning &
