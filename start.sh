@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Set PATH to include user-specific bin directory
+export PATH="/home/appuser/.local/bin:$PATH"
+
 # Check if bash is available
 if ! command -v bash >/dev/null 2>&1; then
     echo "[ERROR] Bash not found. Exiting." >&2
@@ -42,7 +45,7 @@ free_port() {
     fi
 }
 
-# Check for python and uvicorn
+# Check for python, uvicorn and streamlit
 if ! command -v python >/dev/null 2>&1; then
     error "Python not found. Exiting."
     exit 1
@@ -64,13 +67,22 @@ free_port 8000
 # Start FastAPI
 log "Starting FastAPI"
 uvicorn api:app --host 0.0.0.0 --port 8000 --log-level warning &
-
-# Wait to ensure FastAPI starts
+FASTAPI_PID=$!
 sleep 5
+if ! ps -p $FASTAPI_PID > /dev/null; then
+    error "FastAPI failed to start. Exiting."
+    exit 1
+fi
 
 # Start Streamlit
 log "Starting Streamlit"
 streamlit run frontend.py --server.port 7860 --server.address 0.0.0.0 --server.headless true --logger.level info &
+STREAMLIT_PID=$!
+sleep 5
+if ! ps -p $STREAMLIT_PID > /dev/null; then
+    error "Streamlit failed to start. Exiting."
+    exit 1
+fi
 
 # Keep container running
 wait

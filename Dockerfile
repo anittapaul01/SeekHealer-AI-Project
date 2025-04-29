@@ -24,13 +24,14 @@ ENV PIP_CACHE_DIR=/home/appuser/.cache/pip
 ENV HUGGINGFACE_HUB_CACHE=/home/appuser/.cache/huggingface
 RUN pip install --no-cache-dir --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install --no-cache-dir spacy en_core_web_sm
+RUN pip install --no-cache-dir spacy
+RUN python -m spacy download en_core_web_sm
 
 # Switch back to root for file copying and permissions
 USER root
 
 # Copy application files
-COPY frontend.py api.py requirements.txt symptom_matching.py pubmed_fetch.py tabnet_model.py biobert_utils.py start.sh /app/
+COPY frontend.py api.py requirements.txt symptom_matching.py pubmed_fetch.py tabnet_model.py biobert_utils.py start.sh .gitattributes /app/
 COPY data/ /app/data/
 
 # Make start.sh executable and set permissions
