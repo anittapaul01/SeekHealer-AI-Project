@@ -2,7 +2,7 @@ FROM python:3.10
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
-    git git-lfs cmake rsync libjpeg-dev zlib1g-dev lsof \
+    git git-lfs cmake rsync libjpeg-dev zlib1g-dev curl \
     && rm -rf /var/lib/apt/lists/* \
     && git lfs install
 
@@ -39,10 +39,10 @@ RUN chmod +x /app/start.sh && \
     chown -R appuser:appuser /app
 
 # Expose ports
-EXPOSE 7860 8000
+EXPOSE 7860
 
 # Run as appuser
 USER appuser
 
-# Run start.sh
+# Run start.sh 
 CMD ["/app/start.sh"]
