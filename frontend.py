@@ -128,33 +128,22 @@ def main():
     # Input form
     symptoms = st.text_input("Symptoms (comma-seperated, e.g., fever, cough, fatigue):", placeholder="Type your symptoms here...", key="symptoms_input")
 
-    # Initialize session state flag
-    if "predict_clicked" not in st.session_state:
-        st.session_state.predict_clicked = False
-
     # Predict button
     if st.button("Predict"):
         if symptoms:
-            st.session_state.predict_clicked = True
+            try:
+                BACKEND_URL = os.getenv("BACKEND_URL", "http://127.0.0.1:8000")
+                response = requests.post(f"{BACKEND_URL}/predict", json={'symptoms': symptoms})
+                response.raise_for_status()
+                results = response.json()['response']
+            
+                st.markdown('<div class="results-header">Top Predicted Conditions</div>', unsafe_allow_html=True)
+                st.markdown(results, unsafe_allow_html=True)
+
+            except requests.exceptions.RequestException as e:
+                st.error(f"Error connecting to the server: {str(e)}")
         else:
             st.warning("Please enter symptoms.")
-
-    # Run prediction only once per click
-    if st.session_state.predict_clicked:
-        try:
-            BACKEND_URL = os.getenv("BACKEND_URL", "http://127.0.0.1:8000")
-            response = requests.post(f"{BACKEND_URL}/predict", json={'symptoms': st.session_state.symptoms_input})
-            response.raise_for_status()
-            results = response.json()['response']
-        
-            st.markdown('<div class="results-header">Top Predicted Conditions</div>', unsafe_allow_html=True)
-            st.markdown(results, unsafe_allow_html=True)
-    
-        except requests.exceptions.RequestException as e:
-            st.error(f"Error connecting to the server: {str(e)}")
-
-        # Reset to avoid repeated rerun
-        st.session_state.predict_clicked = False
 
     # Footer
     st.markdown("""
