@@ -154,12 +154,7 @@ def main():
 
 
 if __name__ == "__main__":
-    import logging
-    logging.basicConfig(level=logging.INFO)
-    logger = logging.getLogger(__name__)
     try:
-        logger.info('Launching Streamlit app')
         main()
     except Exception as e:
-        logger.error(f'Streamlit app failed: {e}')
         raise
