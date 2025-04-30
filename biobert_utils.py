@@ -15,14 +15,12 @@ logger = logging.getLogger(__name__)
 HF_TOKEN = os.getenv("HF_TOKEN")
 if HF_TOKEN:
     login(HF_TOKEN)
-    logger.info("Authenticated with Hugging Face token")
 else:
     logger.warning("HF_TOKEN not set. Model loading may fail.")
 
 
 try:
     symptom_embeddings = np.load(os.path.join('data', 'symptom_embeddings.npy'))
-    logger.info("Loaded symptom_embeddings.npy")
 except Exception as e:
     logger.error(f"Error loading symptom_embeddings.npy: {e}")
     symptom_embeddings = None

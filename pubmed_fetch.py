@@ -19,7 +19,6 @@ logger = logging.getLogger(__name__)
 
 try:
     medical_db = pd.read_csv(os.path.join('data', 'pubmed_medical_info.csv'))
-    logger.info("Loaded pubmed_medical_info.csv")
 except Exception as e:
     logger.error(f"Error loading pubmed_medical_info.csv: {e}")
     

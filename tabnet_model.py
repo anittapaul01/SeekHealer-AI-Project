@@ -11,12 +11,10 @@ logger = logging.getLogger(__name__)
 
 try:
     aug_df = pd.read_csv(os.path.join('data', 'aug_df.csv'))
-    logger.info("Loaded aug_df.csv")
     disease_classes = pd.factorize(aug_df['Prognosis'])[1]
     symptoms_col = aug_df.columns[1:]
     model_tab = TabNetClassifier()
     model_tab.load_model(os.path.join('data', 'tabnet_model.zip'))
-    logger.info("Loaded tabnet_model.zip")
 except Exception as e:
     logger.error(f"Error loading TabNet data/model: {e}")
     
