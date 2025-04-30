@@ -24,7 +24,7 @@ Seek Healer is an AI-powered disease prediction app that analyzes user-input sym
 ## Project Structure
 - `frontend.py`: Streamlit frontend for user interaction.
 - `api.py`: FastAPI backend for prediction API.
-- `start.sh`: Shell script to manage SpaCy setup, FastAPI (port 8000), and Streamlit (port 7860).
+- `start.sh`: Shell script to manage entry point, FastAPI (port 8000), and Streamlit (port 7860).
 - `biobert_utils.py`: BioBERT embeddings for symptom matching.
 - `symptom_matching.py`: Symptom processing and matching.
 - `tabnet_model.py`: TabNet model for disease prediction.
@@ -50,9 +50,3 @@ docker run -p 7860:7860 -p 8000:8000 -e BACKEND_URL=http://localhost:8000 seekhe
 - The app is deployed using a `Dockerfile` with `start.sh` to manage services.
 - Streamlit runs on port 7860 (exposed), FastAPI on port 8000 (internal).
 - Ensure `data/` files are tracked with Git LFS.
-
-## Troubleshooting
-If you encounter issues with the Docker build:
-1. Ensure `start.sh` is in the project directory:
-   ```bash
-   ls -l
