@@ -144,7 +144,7 @@ def main():
     if st.session_state.predict_clicked:
         try:
             BACKEND_URL = os.getenv("BACKEND_URL", "http://127.0.0.1:8000")
-            response = requests.post(f"{BACKEND_URL}/predict", json={'symptoms': symptoms}, timeout=60)
+            response = requests.post(f"{BACKEND_URL}/predict", json={'symptoms': symptoms})
             response.raise_for_status()
             results = response.json()['response']
         
