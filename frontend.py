@@ -136,7 +136,6 @@ def main():
     if st.button("Predict"):
         if symptoms:
             st.session_state.predict_clicked = True
-            st.session_state.symptoms_input = symptoms  # Store input for reference
         else:
             st.warning("Please enter symptoms.")
 
@@ -144,7 +143,7 @@ def main():
     if st.session_state.predict_clicked:
         try:
             BACKEND_URL = os.getenv("BACKEND_URL", "http://127.0.0.1:8000")
-            response = requests.post(f"{BACKEND_URL}/predict", json={'symptoms': symptoms})
+            response = requests.post(f"{BACKEND_URL}/predict", json={'symptoms': st.session_state.symptoms_input})
             response.raise_for_status()
             results = response.json()['response']
         
