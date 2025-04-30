@@ -60,7 +60,7 @@ def main():
         /* Results header */
         .results-header {
             color: YellowGreen;
-            font-size: 20px;
+            font-size: 30px;
             font-weight: bold;
             font-family: cursive, 'Arial', sans-serif;
             margin: 20px 0;

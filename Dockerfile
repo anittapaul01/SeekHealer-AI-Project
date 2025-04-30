@@ -2,7 +2,7 @@ FROM python:3.10
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
-    git git-lfs cmake rsync libjpeg-dev zlib1g-dev curl \
+    git-lfs libjpeg-dev zlib1g-dev curl \
     && rm -rf /var/lib/apt/lists/* \
     && git lfs install
 
